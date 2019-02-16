@@ -21,7 +21,10 @@ namespace WordApprox_Core.Services.QuestionBase
         {
             _questionBase = questionBase ?? throw new ArgumentNullException(nameof(questionBase));
             _classifier = classifier ?? throw new ArgumentNullException(nameof(classifier));
-            AddFAQ(FAQRawData);
+            if (FAQRawData != null)
+            {
+                AddFAQ(FAQRawData);
+            }
         }
 
         public virtual string GetQuestionIdByQuestion(string question)
