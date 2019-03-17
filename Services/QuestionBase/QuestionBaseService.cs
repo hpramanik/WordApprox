@@ -336,10 +336,9 @@ namespace WordApprox_Core.Services.QuestionBase
                 outR.Add(result[count]);
             }
 
-            List<FAQAnswer> final = new List<FAQAnswer>();
-
             if (!string.IsNullOrEmpty(metaInfo))
             {
+                List<FAQAnswer> final = new List<FAQAnswer>();
                 foreach (var ans in outR)
                 {
                     string[] splits = ans.Answer.MetaInfo.Split(';');
@@ -352,9 +351,11 @@ namespace WordApprox_Core.Services.QuestionBase
                         }
                     }
                 }
+
+                return final;
             }
 
-            return final;
+            return outR;
         }
 
         public virtual Dictionary<Guid, HashSet<Guid>> GetAnswerToQuestionsMap()
