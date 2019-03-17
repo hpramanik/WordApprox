@@ -17,7 +17,7 @@ namespace WordApprox_Core.Services.QuestionBase
         private readonly QuestionBaseModel _questionBase;
         private readonly DamerauLevensteinClassifier _classifier;
 
-        public QuestionBaseService(QuestionBaseModel questionBase, DamerauLevensteinClassifier classifier, Dictionary<string, string> FAQRawData = null)
+        public QuestionBaseService(QuestionBaseModel questionBase, DamerauLevensteinClassifier classifier, HashSet<UnmappedQuestionAnswerModel> FAQRawData = null)
         {
             _questionBase = questionBase ?? throw new ArgumentNullException(nameof(questionBase));
             _classifier = classifier ?? throw new ArgumentNullException(nameof(classifier));
@@ -94,7 +94,7 @@ namespace WordApprox_Core.Services.QuestionBase
             return null;
         }
 
-        public virtual KeyValuePair<string, string> AddFAQ(string question, string answer)
+        public virtual KeyValuePair<string, string> AddFAQ(string question, string answer, string source = null, string metaInfo = null)
         {
             KeyValuePair<string, string> result = new KeyValuePair<string, string>(null, null);
             if (string.IsNullOrEmpty(question))
@@ -139,7 +139,7 @@ namespace WordApprox_Core.Services.QuestionBase
                 }
                 else
                 {
-                    answerModel = new AnswerModel(answer);
+                    answerModel = new AnswerModel(answer, source, metaInfo);
                     _questionBase.Answers.Add(answerModel.AnswerId, answerModel);
                 }
 
@@ -178,12 +178,12 @@ namespace WordApprox_Core.Services.QuestionBase
             return result;
         }
 
-        public virtual Dictionary<string, string> AddFAQ(Dictionary<string, string> FAQs)
+        public virtual Dictionary<string, string> AddFAQ(HashSet<UnmappedQuestionAnswerModel> FAQs)
         {
             Dictionary<string, string> FAQIds = new Dictionary<string, string>();
             foreach (var FAQ in FAQs)
             {
-                var addOperation = AddFAQ(FAQ.Key, FAQ.Value);
+                var addOperation = AddFAQ(FAQ.Question, FAQ.Answer, FAQ.Source, FAQ.MetaInfo);
                 FAQIds.Add(addOperation.Key, addOperation.Value);
             }
 
@@ -292,7 +292,7 @@ namespace WordApprox_Core.Services.QuestionBase
             return answer;
         }
 
-        public async Task<List<FAQAnswer>> GetFAQAnswerAsync(string query, float _scoreThreshold = 0.5f, int _top = 1)
+        public async Task<List<FAQAnswer>> GetFAQAnswerAsync(string query, float _scoreThreshold = 0.5f, int _top = 1, string metaInfo = null)
         {
             List<FAQAnswer> result = new List<FAQAnswer>();
             foreach (QuestionModel ques in _questionBase.Questions.Values)
@@ -333,8 +333,14 @@ namespace WordApprox_Core.Services.QuestionBase
                 outR.Add(result[count]);
             }
 
+            if (!string.IsNullOrEmpty(metaInfo))
+            {
+                outR = outR.Where(entity => entity.Answer.MetaInfo.Equals(metaInfo)).ToList();
+            }
+
             return outR;
         }
+
         public virtual Dictionary<Guid, HashSet<Guid>> GetAnswerToQuestionsMap()
         {
             return _questionBase.AnswerToQuestionsMap;

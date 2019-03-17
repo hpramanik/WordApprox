@@ -5,7 +5,7 @@ namespace WordApprox_Core.Models
 {
     public class AnswerModel
     {
-        public AnswerModel(string answer)
+        public AnswerModel(string answer, string source = null, string metaInfo = null)
         {
             if (string.IsNullOrEmpty(answer))
             {
@@ -14,10 +14,16 @@ namespace WordApprox_Core.Models
 
             AnswerId = Guid.NewGuid();
             DisplayAnswer = answer;
+            MetaInfo = metaInfo;
+            Source = source;
             Answer = DisplayAnswer.Trim().Replace("\n", string.Empty).ToLowerInvariant();
         }
 
         public Guid AnswerId { get; internal set; }
+
+        public string MetaInfo { get; internal set; }
+
+        public string Source { get; internal set; }
         
         public string Answer { get; internal set; }
 

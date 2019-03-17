@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using WordApprox_Core.Models;
 
 namespace WordApprox_Core.Utilities
 {
@@ -31,14 +32,14 @@ namespace WordApprox_Core.Utilities
 
             return result;
         }
-        public static Dictionary<string, string> GetQuestionAnswerMap(List<string> paths)
+        public static HashSet<UnmappedQuestionAnswerModel> GetQuestionAnswerMap(List<string> paths)
         {
             if (paths == null)
             {
                 throw new System.ArgumentNullException(nameof(paths));
             }
 
-            Dictionary<string, string> FAQS = new Dictionary<string, string>();
+            HashSet<UnmappedQuestionAnswerModel> FAQS = new HashSet<UnmappedQuestionAnswerModel>();
             foreach (string path in paths)
             {
                 string rawData = File.ReadAllText(path);
@@ -46,9 +47,24 @@ namespace WordApprox_Core.Utilities
                 for (int line = 1; line < eachLines.Length; line++)
                 {
                     string[] lineSplit = eachLines[line].Split('\t');
-                    if (lineSplit.Length > 2 && !FAQS.ContainsKey(lineSplit[0]))
+                    if (lineSplit.Length > 2)
                     {
-                        FAQS.Add(lineSplit[0], lineSplit[1]);
+                        UnmappedQuestionAnswerModel model = new UnmappedQuestionAnswerModel()
+                        {
+                            Question = lineSplit[0],
+                            Answer = lineSplit[1],
+                        };
+
+                        if (lineSplit.Length >= 3)
+                        {
+                            model.Source = string.IsNullOrEmpty(lineSplit[2]) ? null : lineSplit[2];
+                            if (lineSplit.Length >= 4)
+                            {
+                                model.MetaInfo = string.IsNullOrEmpty(lineSplit[3]) ? null : lineSplit[3];
+                            }
+                        }
+
+                        FAQS.Add(model);
                     }
                 }
             }
@@ -56,7 +72,7 @@ namespace WordApprox_Core.Utilities
             return FAQS;
         }
 
-        public static Dictionary<string, string> GetQuestionAnswerMap(string path)
+        public static HashSet<UnmappedQuestionAnswerModel> GetQuestionAnswerMap(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
