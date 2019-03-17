@@ -40,6 +40,7 @@ namespace WordApprox_Core.Utilities
             }
 
             HashSet<UnmappedQuestionAnswerModel> FAQS = new HashSet<UnmappedQuestionAnswerModel>();
+            HashSet<string> questionInserted = new HashSet<string>();
             foreach (string path in paths)
             {
                 string rawData = File.ReadAllText(path);
@@ -47,8 +48,9 @@ namespace WordApprox_Core.Utilities
                 for (int line = 1; line < eachLines.Length; line++)
                 {
                     string[] lineSplit = eachLines[line].Split('\t');
-                    if (lineSplit.Length > 2)
+                    if (lineSplit.Length > 2 && !questionInserted.Contains(lineSplit[0]))
                     {
+                        questionInserted.Add(lineSplit[0]);
                         UnmappedQuestionAnswerModel model = new UnmappedQuestionAnswerModel()
                         {
                             Question = lineSplit[0],

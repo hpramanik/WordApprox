@@ -11,7 +11,7 @@ namespace WordApprox_Core.Services.QuestionBase
     {
         private const string ExceptionMessageAnswer1 = "Answer cannot be empty or null.";
         private const string ExceptionMessageQuestion1 = "Question cannot be empty or null.";
-        private const string ExceptionMessageQuestion2 = "One question cannot have multiple answers.";
+        private const string ExceptionMessageQuestion2 = "One question cannot have multiple answers";
         private const string ExceptionMessageQuestion3 = "Question Id cannot be null or empty";
         private const string ExceptionMessageQuestion4 = "Question cannot be null or empty";
         private readonly QuestionBaseModel _questionBase;
@@ -160,7 +160,7 @@ namespace WordApprox_Core.Services.QuestionBase
             {
                 if (answerId == null)
                 {
-                    throw new InvalidOperationException(ExceptionMessageQuestion2);
+                    throw new InvalidOperationException($"{ExceptionMessageQuestion2} : {question}");
                 }
                 else
                 {
@@ -170,7 +170,7 @@ namespace WordApprox_Core.Services.QuestionBase
                     }
                     else
                     {
-                        throw new InvalidOperationException(ExceptionMessageQuestion2);
+                        throw new InvalidOperationException($"{ExceptionMessageQuestion2} : {question}");
                     }
                 }
             }
@@ -184,7 +184,10 @@ namespace WordApprox_Core.Services.QuestionBase
             foreach (var FAQ in FAQs)
             {
                 var addOperation = AddFAQ(FAQ.Question, FAQ.Answer, FAQ.Source, FAQ.MetaInfo);
-                FAQIds.Add(addOperation.Key, addOperation.Value);
+                if (!FAQIds.ContainsKey(addOperation.Key))
+                {
+                    FAQIds.Add(addOperation.Key, addOperation.Value);
+                }
             }
 
             return FAQIds;
@@ -333,12 +336,25 @@ namespace WordApprox_Core.Services.QuestionBase
                 outR.Add(result[count]);
             }
 
+            List<FAQAnswer> final = new List<FAQAnswer>();
+
             if (!string.IsNullOrEmpty(metaInfo))
             {
-                outR = outR.Where(entity => entity.Answer.MetaInfo.Equals(metaInfo)).ToList();
+                foreach (var ans in outR)
+                {
+                    string[] splits = ans.Answer.MetaInfo.Split(';');
+                    foreach (string split in splits)
+                    {
+                        if (split.Trim().Equals(metaInfo.Trim()))
+                        {
+                            final.Add(ans);
+                            break;
+                        }
+                    }
+                }
             }
 
-            return outR;
+            return final;
         }
 
         public virtual Dictionary<Guid, HashSet<Guid>> GetAnswerToQuestionsMap()
