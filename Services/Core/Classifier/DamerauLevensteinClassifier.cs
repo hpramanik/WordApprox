@@ -19,7 +19,7 @@ namespace WordApprox_Core.Services.Core.Classifier
         private string _string1;
         private string _string2;
 
-        private DamerauLevensteinMetric dLmetric = new DamerauLevensteinMetric();
+        private DamerauLevensteinMetric dLmetric = null;
 
         public DamerauLevensteinClassifier()
         : this(new ClassifierModel())
@@ -38,6 +38,7 @@ namespace WordApprox_Core.Services.Core.Classifier
             SHORTSYNNONYMACCEPTANCETHRESHOLD = model.ShortSynnonymAcceptanceThreshold;
             STRINGLENGTHTHRESHOLD = model.StringLengthThreshold;
             BREAKONCOMPLETEMATCH = model.BreakOnCompleteMatch;
+            dLmetric = new DamerauLevensteinMetric(new DamerauLevensteinMetricModel { MaxLength = MAX });
         }
 
         public void SetString1(string string1)
