@@ -7,7 +7,7 @@ namespace WordApprox_Core.Utilities
 {
     public class FAQ_Service_Utility
     {
-        public static List<string> Splitter(string stringToSplit)
+        public static List<string> Splitter(string stringToSplit, int groupWords = 1)
         {
             if (string.IsNullOrEmpty(stringToSplit))
             {
@@ -28,6 +28,34 @@ namespace WordApprox_Core.Utilities
             foreach (Match m in pattern.Matches(stringToSplit))
             {
                 result.Add(m.Groups[1].Value);
+            }
+
+            if (groupWords > 1)
+            {
+                List<string> tempResult = new List<string>();
+                for (int xtrip = 0; xtrip < result.Count; xtrip ++)
+                {
+                    string now = result[xtrip];
+                    for (int ytrip = 1; ytrip <= groupWords; ytrip++)
+                    {
+                        if (xtrip + ytrip < result.Count)
+                        {
+                            now += result[xtrip + ytrip];
+                        }
+                        else
+                        {
+                            now = string.Empty;
+                            break;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(now))
+                    {
+                        tempResult.Add(now);
+                    }
+                }
+
+                result = tempResult;
             }
 
             return result;
