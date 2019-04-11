@@ -215,46 +215,73 @@ namespace WordApprox_Core.Services.Core.Classifier
                 return result;
             }
 
-            List<string> string1SplitsWithDup = Splitter(_string1);
-            List<string> string2SplitsWithDup = Splitter(_string2);
-            HashSet<string> string1Splits = new HashSet<string>(string1SplitsWithDup);
-            HashSet<string> string2Splits = new HashSet<string>(string2SplitsWithDup);
-            if (string1Splits.Count < string2Splits.Count)
+            HashSet<string> string1Check = new HashSet<string>(Splitter(_string1));
+            HashSet<string> string2Check = new HashSet<string>(Splitter(_string2));
+            int shortLength = string1Check.Count > string2Check.Count ? string2Check.Count : string1Check.Count;
+            HashSet<float> tempValues = new HashSet<float>();
+            for (int xtrip = 1; xtrip <= shortLength && xtrip <= MAXITERATIVEGROUPVALUE; xtrip++)
             {
-                HashSet<string> temp = string1Splits;
-                string1Splits = string2Splits;
-                string2Splits = temp;
-            }
+                float tempResult = 0f;
+                List<string> string1SplitsWithDup = Splitter(_string1, xtrip);
+                List<string> string2SplitsWithDup = Splitter(_string2, xtrip);
 
-            float[] matchMap = new float[string1Splits.Count];
-            int count = 0;
-            foreach (string split1 in string1Splits)
-            {
-                matchMap[count] = 0;
-                foreach (string split2 in string2Splits)
+                if (string1SplitsWithDup.Count == 0 || string2SplitsWithDup.Count == 0)
                 {
-                    float currMatch = 0;
-                    if (split1[0] == split2[0])
-                    {
-                        currMatch = GetResultForSentences(split1, split2);
-                    }
-
-                    matchMap[count] = currMatch > matchMap[count] ? currMatch : matchMap[count];
-                    if (currMatch == 1)
-                    {
-                        break;
-                    }
+                    continue;
                 }
-                count++;
-            }
 
-            foreach (float eachWordMaxMatch in matchMap)
+                HashSet<string> string1Splits = new HashSet<string>(string1SplitsWithDup);
+                HashSet<string> string2Splits = new HashSet<string>(string2SplitsWithDup);
+                if (string1Splits.Count < string2Splits.Count)
+                {
+                    HashSet<string> temp = string1Splits;
+                    string1Splits = string2Splits;
+                    string2Splits = temp;
+                }
+
+                float[] matchMap = new float[string1Splits.Count];
+                int count = 0;
+                foreach (string split1 in string1Splits)
+                {
+                    matchMap[count] = 0;
+                    foreach (string split2 in string2Splits)
+                    {
+                        float currMatch = 0;
+                        if (split1[0] == split2[0])
+                        {
+                            currMatch = GetResultForSentences(split1, split2);
+                        }
+
+                        matchMap[count] = currMatch > matchMap[count] ? currMatch : matchMap[count];
+                        if (BREAKONCOMPLETEMATCH && currMatch == 1)
+                        {
+                            break;
+                        }
+                    }
+                    count++;
+                }
+
+                foreach (float eachWordMaxMatch in matchMap)
+                {
+                    tempResult += eachWordMaxMatch;
+                }
+
+                tempResult /= matchMap.Length;
+                tempValues.Add(tempResult);
+            }
+            
+            foreach (float value in tempValues)
             {
-                result += eachWordMaxMatch;
+                result += value;
             }
 
-            result /= matchMap.Length;
+            if (tempValues.Count > 0)
+            {
+                result /= tempValues.Count;
+            }
+
             result = (result * EACHWORDMATCHPROPORTION) + (GetResult() * FULLSTRINGMATCHPROPORTION);
+
             return result;
         }
     }

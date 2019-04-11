@@ -358,6 +358,69 @@ namespace WordApprox_Core.Services.QuestionBase
             return outR;
         }
 
+        public List<FAQAnswer> GetFAQAnswer(string query, float _scoreThreshold = 0.5f, int _top = 1, string metaInfo = null)
+        {
+            List<FAQAnswer> result = new List<FAQAnswer>();
+            foreach (QuestionModel ques in _questionBase.Questions.Values)
+            {
+                _classifier.SetString1(ques.Question);
+                _classifier.SetString2(query);
+                float score = _classifier.GetSentenceMatchResult();
+                if(score > _scoreThreshold)
+                {
+                    FAQAnswer ans = new FAQAnswer()
+                    {
+                        Score = score,
+                        TopMatchedQuestion = ques.Question,
+                        Questions = GetQuestionByIds(_questionBase.AnswerToQuestionsMap[_questionBase.QuestionToAnswerMap[ques.QuestionId]]),
+                        Answer = _questionBase.Answers[_questionBase.QuestionToAnswerMap[ques.QuestionId]],
+                    };
+                    result.Add(ans);
+                }
+            }
+            
+            result = result.OrderByDescending(ob => ob.Score).ToList();
+            HashSet<Guid> mapper = new HashSet<Guid>();
+            List<FAQAnswer> filterSimilar = new List<FAQAnswer>();
+            foreach(FAQAnswer answer in result)
+            {
+                if(answer.Answer != null && !mapper.Contains(answer.Answer.AnswerId))
+                {
+                    mapper.Add(answer.Answer.AnswerId);
+                    filterSimilar.Add(answer);
+                }
+            }
+
+            result = filterSimilar;
+
+            List<FAQAnswer> outR = new List<FAQAnswer>();
+            for (int count = 0; count < _top && count < result.Count; count++)
+            {
+                outR.Add(result[count]);
+            }
+
+            if (!string.IsNullOrEmpty(metaInfo))
+            {
+                List<FAQAnswer> final = new List<FAQAnswer>();
+                foreach (var ans in outR)
+                {
+                    string[] splits = ans.Answer.MetaInfo.Split(';');
+                    foreach (string split in splits)
+                    {
+                        if (split.Trim().Equals(metaInfo.Trim()))
+                        {
+                            final.Add(ans);
+                            break;
+                        }
+                    }
+                }
+
+                return final;
+            }
+
+            return outR;
+        }
+
         public virtual Dictionary<Guid, HashSet<Guid>> GetAnswerToQuestionsMap()
         {
             return _questionBase.AnswerToQuestionsMap;
