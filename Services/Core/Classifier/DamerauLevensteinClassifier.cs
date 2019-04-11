@@ -13,6 +13,8 @@ namespace WordApprox_Core.Services.Core.Classifier
         private readonly int MAX;
         private readonly float SHORTSYNNONYMACCEPTANCETHRESHOLD;
         private readonly float STRINGLENGTHTHRESHOLD;
+        private readonly float FULLSTRINGMATCHPROPORTION;
+        private readonly float EACHWORDMATCHPROPORTION;
 
         private readonly bool BREAKONCOMPLETEMATCH;
 
@@ -38,6 +40,8 @@ namespace WordApprox_Core.Services.Core.Classifier
             SHORTSYNNONYMACCEPTANCETHRESHOLD = model.ShortSynnonymAcceptanceThreshold;
             STRINGLENGTHTHRESHOLD = model.StringLengthThreshold;
             BREAKONCOMPLETEMATCH = model.BreakOnCompleteMatch;
+            FULLSTRINGMATCHPROPORTION = model.FullStringMatchProportion;
+            EACHWORDMATCHPROPORTION = model.EachWordMatchProportion;
             dLmetric = new DamerauLevensteinMetric(new DamerauLevensteinMetricModel { MaxLength = MAX });
         }
 
@@ -165,8 +169,7 @@ namespace WordApprox_Core.Services.Core.Classifier
             }
 
             result /= matchMap.Length;
-            result += await GetResultAsync();
-            result /= 2;
+            result = (result * EACHWORDMATCHPROPORTION) + (await GetResultAsync() * FULLSTRINGMATCHPROPORTION);
 
             return result;
         }
@@ -223,9 +226,7 @@ namespace WordApprox_Core.Services.Core.Classifier
             }
 
             result /= matchMap.Length;
-            result += GetResult();
-            result /= 2;
-
+            result = (result * EACHWORDMATCHPROPORTION) + (GetResult() * FULLSTRINGMATCHPROPORTION);
             return result;
         }
     }

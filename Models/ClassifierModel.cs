@@ -9,5 +9,9 @@ namespace WordApprox_Core.Models
         public float StringLengthThreshold { get; set; } = 0.5F;
 
         public bool BreakOnCompleteMatch { get; set; } = false;
+
+        public float FullStringMatchProportion { get; set; } = 0.3F;
+
+        public float EachWordMatchProportion { get; set; } = 0.7F;
     }
 }
