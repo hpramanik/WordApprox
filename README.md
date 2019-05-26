@@ -16,13 +16,20 @@ A TSV file is required to feed to the algorithm that has question and answers pr
 
 ```
 Question	Answer	Source	MetaInfo
-What's your age?	I don't really have an age.	wordApx_Test	wordApx:chitchat
-Are you young?	I don't really have an age.	wordApx_Test	wordApx:chitchat
-When were you born?	I don't really have an age.	wordApx_Test	wordApx:chitchat
-What age are you?	I don't really have an age.	wordApx_Test	wordApx:chitchat
-Are you old?	I don't really have an age.	wordApx_Test	wordApx:chitchat
-How old are you?	I don't really have an age.	wordApx_Test	wordApx:chitchat
-How long ago were you born?	I don't really have an age.	wordApx_Test	wordApx:chitchat
+Hiya	Hi!	wordApx_Test	wordApx:chitchat
+Good morning	Hi!	wordApx_Test	wordApx:chitchat
+Hi	Hi!	wordApx_Test	wordApx:chitchat
+Hello	Hi!	wordApx_Test	wordApx:chitchat
+Heya	Hi!	wordApx_Test	wordApx:chitchat
+Hi there!	Hi!	wordApx_Test	wordApx:chitchat
+Good evening	Evening!	wordApx_Test	wordApx:chitchat
+What's your age?	Still at development phrase..	wordApx_Test	wordApx:chitchat
+Are you young?	Still at development phrase..	wordApx_Test	wordApx:chitchat
+When were you born?	Still at development phrase..	wordApx_Test	wordApx:chitchat
+What age are you?	Still at development phrase..	wordApx_Test	wordApx:chitchat
+Are you old?	Still at development phrase..	wordApx_Test	wordApx:chitchat
+How old are you?	Still at development phrase..	wordApx_Test	wordApx:chitchat
+How long ago were you born?	Still at development phrase..	wordApx_Test	wordApx:chitchat
 Ask me anything	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
 Ask me a question	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
 Can you ask me a question?	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
