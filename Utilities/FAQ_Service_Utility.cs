@@ -33,7 +33,7 @@ namespace WordApprox_Core.Utilities
             if (groupWords > 1)
             {
                 List<string> tempResult = new List<string>();
-                for (int xtrip = 0; xtrip < result.Count; xtrip ++)
+                for (int xtrip = 0; xtrip < result.Count; xtrip++)
                 {
                     string now = result[xtrip];
                     for (int ytrip = 1; ytrip <= groupWords; ytrip++)
@@ -76,7 +76,7 @@ namespace WordApprox_Core.Utilities
                 for (int line = 1; line < eachLines.Length; line++)
                 {
                     string[] lineSplit = eachLines[line].Split('\t');
-                    if (lineSplit.Length > 2 && !questionInserted.Contains(lineSplit[0]))
+                    if (lineSplit.Length >= 2 && !questionInserted.Contains(lineSplit[0]))
                     {
                         questionInserted.Add(lineSplit[0]);
                         UnmappedQuestionAnswerModel model = new UnmappedQuestionAnswerModel()
@@ -109,7 +109,7 @@ namespace WordApprox_Core.Utilities
                 throw new System.ArgumentException("Path cannot be null.", nameof(path));
             }
 
-            return GetQuestionAnswerMap(new List<string>{ path });
+            return GetQuestionAnswerMap(new List<string> { path });
         }
     }
 }

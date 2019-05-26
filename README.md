@@ -1,39 +1,22 @@
 # WordApprox
 
-WordApprox is a frequently asked question answering algorithm. It finds the best matched answer from a set of questions and answer fed to the Algorithm.
+WordApprox is a Question answering bot. It finds the best matched answer from a set of questions and answer fed to the Algorithm.
 
 ## TSV (Tab Separated File)
 
 A TSV file is required to feed to the algorithm that has question and answers pre-filled following the below mentioned **Rules**:
 
-- Columns (Question Answer Source MetaInfo)
-- Source and MetaInfo are optional fields
-- MetaInfo: Specifies the column that is required for filtration of answers
+- Each line should have these columns (Question Answer)
 - Multiple Question may have same answer
 - Multiple Answers must not have same question
-
-- Example TSV file:
+- Example:
 
 ```
-Question	Answer	Source	MetaInfo
-Good morning	Hi!	wordApx_Test	wordApx:chitchat
-Hi	Hi!	wordApx_Test	wordApx:chitchat
-Hello	Hi!	wordApx_Test	wordApx:chitchat
-Hi there!	Hi!	wordApx_Test	wordApx:chitchat
-Good evening	Evening!	wordApx_Test	wordApx:chitchat
-What's your age?	Still at development phrase..	wordApx_Test	wordApx:chitchat
-Are you young?	Still at development phrase..	wordApx_Test	wordApx:chitchat
-When were you born?	Still at development phrase..	wordApx_Test	wordApx:chitchat
-What age are you?	Still at development phrase..	wordApx_Test	wordApx:chitchat
-Are you old?	Still at development phrase..	wordApx_Test	wordApx:chitchat
-How old are you?	Still at development phrase..	wordApx_Test	wordApx:chitchat
-How long ago were you born?	Still at development phrase..	wordApx_Test	wordApx:chitchat
-Ask me anything	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
-Ask me a question	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
-Can you ask me a question?	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
-Ask me something	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
-What do you want to know about me?	I'm a much better answerer than asker.	wordApx_Test	wordApx:chitchat
-
+Question	Answer
+Hi	Hello.
+How are you?	I am good.
+What is your name?	WordApprox.
+Hey!	Hello.
 ```
 
 ## Sample Program.cs: [Replace <Path_to_tsv_file> with actual TSV file path]
@@ -64,7 +47,7 @@ namespace ImplWordApprox
                 string query = Console.ReadLine();
                 Stopwatch stp1 = new Stopwatch();
                 stp1.Start();
-                var task = qBaseService.GetFAQAnswerAsync(query: query, _scoreThreshold: 0.5F, _top: 3, metaInfo: "wordApx:chitchat");
+                var task = qBaseService.GetFAQAnswerAsync(query: query, _scoreThreshold: 0.5F, _top: 3);
                 task.Wait();
                 List<FAQAnswer> anss = task.Result;
                 stp1.Stop();
@@ -72,7 +55,7 @@ namespace ImplWordApprox
 
                 stp1 = new Stopwatch();
                 stp1.Start();
-                List<FAQAnswer> anss2 = qBaseService.GetFAQAnswer(query: query, _scoreThreshold: 0.5F, _top: 3, metaInfo: "wordApx:chitchat");
+                List<FAQAnswer> anss2 = qBaseService.GetFAQAnswer(query: query, _scoreThreshold: 0.5F, _top: 3);
                 stp1.Stop();
                 Console.WriteLine($"Time (Non-Async): {stp1.ElapsedMilliseconds} anss: {anss2.Count}");
 
