@@ -36,7 +36,7 @@ namespace WordApprox_Core.Services.QuestionBase
 
             question = question.Trim().Replace("\n", string.Empty).ToLowerInvariant();
 
-            if(_questionBase.Questions != null)
+            if (_questionBase.Questions != null)
             {
                 foreach (QuestionModel eachQuestion in _questionBase.Questions.Values)
                 {
@@ -67,7 +67,7 @@ namespace WordApprox_Core.Services.QuestionBase
             {
                 questions.Add(GetQuestionById(questionId));
             }
-            
+
             return questions;
         }
 
@@ -136,6 +136,7 @@ namespace WordApprox_Core.Services.QuestionBase
                 if (answerId != null)
                 {
                     answerModel = _questionBase.Answers[Guid.Parse(answerId)];
+                    answerModel.MergeMetaInfo(metaInfo);
                 }
                 else
                 {
@@ -197,7 +198,7 @@ namespace WordApprox_Core.Services.QuestionBase
         {
             QuestionModel question = null;
             associatedAnswer = null;
-            if(_questionBase.Questions.ContainsKey(questionId))
+            if (_questionBase.Questions.ContainsKey(questionId))
             {
                 question = _questionBase.Questions[questionId];
                 _questionBase.Questions.Remove(questionId);
@@ -272,7 +273,7 @@ namespace WordApprox_Core.Services.QuestionBase
             if (_questionBase.Answers.ContainsKey(answerId))
             {
                 HashSet<Guid> questionIds = _questionBase.AnswerToQuestionsMap[answerId];
-                foreach(var questionId in questionIds)
+                foreach (var questionId in questionIds)
                 {
                     associatedQuestions.Add(RemoveQuestion(questionId, out answer));
                 }
@@ -303,7 +304,7 @@ namespace WordApprox_Core.Services.QuestionBase
                 _classifier.SetString1(ques.Question);
                 _classifier.SetString2(query);
                 float score = await _classifier.GetSentenceMatchResultAsync();
-                if(score > _scoreThreshold)
+                if (score > _scoreThreshold)
                 {
                     FAQAnswer ans = new FAQAnswer()
                     {
@@ -315,13 +316,13 @@ namespace WordApprox_Core.Services.QuestionBase
                     result.Add(ans);
                 }
             }
-            
+
             result = result.OrderByDescending(ob => ob.Score).ToList();
             HashSet<Guid> mapper = new HashSet<Guid>();
             List<FAQAnswer> filterSimilar = new List<FAQAnswer>();
-            foreach(FAQAnswer answer in result)
+            foreach (FAQAnswer answer in result)
             {
-                if(answer.Answer != null && !mapper.Contains(answer.Answer.AnswerId))
+                if (answer.Answer != null && !mapper.Contains(answer.Answer.AnswerId))
                 {
                     mapper.Add(answer.Answer.AnswerId);
                     filterSimilar.Add(answer);
@@ -341,14 +342,9 @@ namespace WordApprox_Core.Services.QuestionBase
                 List<FAQAnswer> final = new List<FAQAnswer>();
                 foreach (var ans in outR)
                 {
-                    string[] splits = ans.Answer.MetaInfo.Split(';');
-                    foreach (string split in splits)
+                    if (ans.Answer.MatchMetaInfo(metaInfo.Trim()))
                     {
-                        if (split.Trim().Equals(metaInfo.Trim()))
-                        {
-                            final.Add(ans);
-                            break;
-                        }
+                        final.Add(ans);
                     }
                 }
 
@@ -366,7 +362,7 @@ namespace WordApprox_Core.Services.QuestionBase
                 _classifier.SetString1(ques.Question);
                 _classifier.SetString2(query);
                 float score = _classifier.GetSentenceMatchResult();
-                if(score > _scoreThreshold)
+                if (score > _scoreThreshold)
                 {
                     FAQAnswer ans = new FAQAnswer()
                     {
@@ -378,13 +374,13 @@ namespace WordApprox_Core.Services.QuestionBase
                     result.Add(ans);
                 }
             }
-            
+
             result = result.OrderByDescending(ob => ob.Score).ToList();
             HashSet<Guid> mapper = new HashSet<Guid>();
             List<FAQAnswer> filterSimilar = new List<FAQAnswer>();
-            foreach(FAQAnswer answer in result)
+            foreach (FAQAnswer answer in result)
             {
-                if(answer.Answer != null && !mapper.Contains(answer.Answer.AnswerId))
+                if (answer.Answer != null && !mapper.Contains(answer.Answer.AnswerId))
                 {
                     mapper.Add(answer.Answer.AnswerId);
                     filterSimilar.Add(answer);
@@ -404,14 +400,9 @@ namespace WordApprox_Core.Services.QuestionBase
                 List<FAQAnswer> final = new List<FAQAnswer>();
                 foreach (var ans in outR)
                 {
-                    string[] splits = ans.Answer.MetaInfo.Split(';');
-                    foreach (string split in splits)
+                    if (ans.Answer.MatchMetaInfo(metaInfo.Trim()))
                     {
-                        if (split.Trim().Equals(metaInfo.Trim()))
-                        {
-                            final.Add(ans);
-                            break;
-                        }
+                        final.Add(ans);
                     }
                 }
 
