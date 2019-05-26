@@ -10,7 +10,7 @@ A TSV file is required to feed to the algorithm that has question and answers pr
 - Source and MetaInfo are optional fields
 - MetaInfo: Specifies the column that is required for filtration or answers
 - Multiple Question may have same answer
-- Multiple Answer must not have same question
+- Multiple Answers must not have same question
 
 - Example TSV file:
 
