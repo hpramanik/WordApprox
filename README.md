@@ -2,6 +2,15 @@
 
 WordApprox is a Question answering bot. It finds the best matched answer from a set of questions and answer fed to the Algorithm.
 
+Implementation in Dotnet core 2.0.
+
+Usage:
+
+- Install dotnet core sdk 2.x
+- Clone or download the code
+- From code directory run command : "dotnet build"
+- Use the DLL in other projects, a sample code implementation is provided below.
+
 ## TSV (Tab Separated File)
 
 A TSV file is required to feed to the algorithm that has question and answers pre-filled following the below mentioned **Rules**:
