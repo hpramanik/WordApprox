@@ -8,7 +8,7 @@ A TSV file is required to feed to the algorithm that has question and answers pr
 
 - Columns (Question Answer Source MetaInfo)
 - Source and MetaInfo are optional fields
-- MetaInfo: Specifies the column that is required for filtration or answers
+- MetaInfo: Specifies the column that is required for filtration of answers
 - Multiple Question may have same answer
 - Multiple Answers must not have same question
 
@@ -16,11 +16,9 @@ A TSV file is required to feed to the algorithm that has question and answers pr
 
 ```
 Question	Answer	Source	MetaInfo
-Hiya	Hi!	wordApx_Test	wordApx:chitchat
 Good morning	Hi!	wordApx_Test	wordApx:chitchat
 Hi	Hi!	wordApx_Test	wordApx:chitchat
 Hello	Hi!	wordApx_Test	wordApx:chitchat
-Heya	Hi!	wordApx_Test	wordApx:chitchat
 Hi there!	Hi!	wordApx_Test	wordApx:chitchat
 Good evening	Evening!	wordApx_Test	wordApx:chitchat
 What's your age?	Still at development phrase..	wordApx_Test	wordApx:chitchat
